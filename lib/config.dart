@@ -1,0 +1,8 @@
+const appID = 1287432885;
+const appSign =
+    "80249ce3cd9ba60838f181cc78808809b04a07cff223ec5d122de97e724522d2";
+
+const callbackSecret = "80249ce3cd9ba60838f181cc78808809";
+const serverSecret = "3e875a3bdd0005247895e41e92b8839b";
+const token =
+    "04AAAAAGZ8Q3YAEGxuc2Q4aWMxb3N6OXZ5NmgAsHJsm8EL2HKImO2WNkncUtzQSW2IuAqGR4rAaISkzJHIJiEMU6cxv0i0ZYrmLVnIN/dhksfS9/Q/tIrU3vC7NVQoykStp4Vx0SPW8zTYYp/YpVNnpc9G0LdHajXY6hvL/2FZun6Do6MT/LfbcXK9mXu0niZPThWu1NYEoO+Zm0Nf+ZuGm4Ty0lcJSud8pLPsCBrTPqy4T7U/+6T++Io9B1ZHndmjhigxXyIiFwaTP2ER";
