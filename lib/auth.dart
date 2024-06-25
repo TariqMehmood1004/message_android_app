@@ -3,6 +3,7 @@ import 'package:get/get.dart';
 import 'package:zego_zimkit/zego_zimkit.dart';
 import 'config.dart';
 import 'home_screen.dart';
+import 'services/services.dart';
 import 'utils/colors.dart';
 
 class LoginPage extends StatefulWidget {
@@ -17,13 +18,22 @@ class _LoginPageState extends State<LoginPage> {
   final TextEditingController _userIDController = TextEditingController();
   final TextEditingController _userNameController = TextEditingController();
 
-  void connectUser() {
-    ZIMKit().connectUser(
-        id: _userIDController.text, name: _userNameController.text);
+  Future<void> connectUser() async {
+    String userID = _userIDController.text.trim();
+    String userName = _userNameController.text.trim();
 
-    if (mounted) {
-      Get.to(const MyHomePage(title: "Zedo"),
-          transition: Transition.circularReveal);
+    if (userID.isEmpty || userName.isEmpty) {
+      Get.snackbar('Error', 'User ID and User Name cannot be empty',
+          snackPosition: SnackPosition.BOTTOM);
+      return;
+    }
+
+    try {
+      await Auth.login(userID, userName);
+      Get.off(() => MyHomePage(title: "Zedo"));
+    } catch (error) {
+      Get.snackbar('Error', error.toString(),
+          snackPosition: SnackPosition.BOTTOM);
     }
   }
 

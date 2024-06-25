@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:zego_zimkit/zego_zimkit.dart';
@@ -22,6 +24,17 @@ class MyApp extends StatefulWidget {
 }
 
 class _MyAppState extends State<MyApp> {
+  @override
+  void initState() {
+    super.initState();
+
+    if (ZIMKit().currentUser != null) {
+      log("Current User: ${ZIMKit().currentUser()}");
+    } else {
+      log("Current User: Not Available...");
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return GetMaterialApp(
