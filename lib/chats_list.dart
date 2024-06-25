@@ -8,23 +8,21 @@ class ChatsList extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: SingleChildScrollView(
-        physics: const BouncingScrollPhysics(),
-        child: ZIMKitConversationListView(
-          onPressed: (context, conversation, defaultAction) {
-            if (conversation.type == ZIMConversationType.group) {
-              print("Group Chat Selected");
-            } else {
-              print("Single Chat Selected");
-            }
-            Get.to(
-              () => ZIMKitMessageListPage(
-                conversationID: conversation.id,
-                conversationType: conversation.type,
-              ),
-            );
-          },
-        ),
+      body: ZIMKitConversationListView(
+        itemBuilder: (context, conversations, child) {
+          if (conversations == null) {
+            return Center(child: Text('No chats available'));
+          }
+          return child;
+        },
+        onPressed: (context, conversation, defaultAction) {
+          Get.to(
+            () => ZIMKitMessageListPage(
+              conversationID: conversation.id,
+              conversationType: conversation.type,
+            ),
+          );
+        },
       ),
     );
   }
