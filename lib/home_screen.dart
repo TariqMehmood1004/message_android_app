@@ -147,7 +147,7 @@ class _MyHomePageState extends State<MyHomePage> {
                           "Video Call",
                           style:
                               Theme.of(context).textTheme.titleLarge!.copyWith(
-                                    // color: colorWhite,
+                                    color: colorWhite.withOpacity(0.8),
                                     fontWeight: FontWeight.bold,
                                     fontSize: 20,
                                   ),
@@ -168,7 +168,7 @@ class _MyHomePageState extends State<MyHomePage> {
                           "Voice Call",
                           style:
                               Theme.of(context).textTheme.titleLarge!.copyWith(
-                                    // color: colorWhite,
+                                    color: colorBlack.withOpacity(0.8),
                                     fontWeight: FontWeight.bold,
                                     fontSize: 20,
                                   ),
