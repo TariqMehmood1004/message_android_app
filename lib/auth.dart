@@ -59,7 +59,7 @@ class _LoginPageState extends State<LoginPage> {
               TextField(
                 controller: _userIDController,
                 decoration: InputDecoration(
-                  labelText: 'User ID',
+                  labelText: 'User ID (e.g. 123456)',
                   border: OutlineInputBorder(),
                 ),
               ),
@@ -67,7 +67,7 @@ class _LoginPageState extends State<LoginPage> {
               TextField(
                 controller: _userNameController,
                 decoration: InputDecoration(
-                  labelText: 'User Name',
+                  labelText: 'User Name (e.g. Tariq Mehmood)',
                   border: OutlineInputBorder(),
                 ),
               ),
