@@ -1,4 +1,4 @@
-# message
+# Android Message App
 
 A new Flutter project.
 
