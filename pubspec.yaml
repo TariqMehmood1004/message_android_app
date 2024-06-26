@@ -14,6 +14,10 @@ dependencies:
   zego_uikit_prebuilt_call: ^4.12.9
   get: ^4.6.6
   zego_zimkit: ^1.18.7
+  
+  # For Video Call Flash Light
+  torch_light: ^1.0.0
+  camera: ^0.11.0+1
 
 dev_dependencies:
   flutter_test:

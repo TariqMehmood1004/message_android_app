@@ -5,8 +5,11 @@ import 'package:zego_zimkit/zego_zimkit.dart';
 import 'auth.dart';
 import 'config.dart';
 import 'home_screen.dart';
+import 'package:camera/camera.dart';
 
 void main() {
+  WidgetsFlutterBinding.ensureInitialized();
+  final cameras = await availableCameras();
   ZIMKit().init(
     appID: appID,
     appSign: appSign,
@@ -16,12 +19,14 @@ void main() {
 
 class MyApp extends StatefulWidget {
   const MyApp({super.key});
+  final List<CameraDescription> cameras;
 
   @override
   State<MyApp> createState() => _MyAppState();
 }
 
 class _MyAppState extends State<MyApp> {
+  
   @override
   void initState() {
     super.initState();
