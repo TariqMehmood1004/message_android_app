@@ -24,8 +24,11 @@ class _LoginPageState extends State<LoginPage> {
     String userName = _userNameController.text.trim();
 
     if (userID.isEmpty || userName.isEmpty) {
-      Get.snackbar('Error', 'User ID and User Name cannot be empty',
-          snackPosition: SnackPosition.BOTTOM);
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text('User ID and User Name cannot be empty'),
+        ),
+      );
       return;
     }
 
@@ -33,8 +36,11 @@ class _LoginPageState extends State<LoginPage> {
       await Auth.login(userID, userName);
       Get.off(() => MyHomePage(title: "Zedo"));
     } catch (error) {
-      Get.snackbar('Error', error.toString(),
-          snackPosition: SnackPosition.BOTTOM);
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(error.toString()),
+        ),
+      );
     }
   }
 
@@ -74,6 +80,7 @@ class _LoginPageState extends State<LoginPage> {
                     SizedBox(height: 32),
                     TextField(
                       controller: _userIDController,
+                      keyboardType: TextInputType.number,
                       decoration: InputDecoration(
                         labelText: 'User ID (e.g. 123456)',
                         border: OutlineInputBorder(),
@@ -82,6 +89,7 @@ class _LoginPageState extends State<LoginPage> {
                     SizedBox(height: 16),
                     TextField(
                       controller: _userNameController,
+                      keyboardType: TextInputType.name,
                       decoration: InputDecoration(
                         labelText: 'User Name (e.g. Tariq Mehmood)',
                         border: OutlineInputBorder(),

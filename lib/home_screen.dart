@@ -127,15 +127,13 @@ class _MyHomePageState extends State<MyHomePage> {
           shrinkWrap: true,
           padding: const EdgeInsets.symmetric(horizontal: 20.0),
           scrollDirection: Axis.vertical,
-          reverse: true,          
+          reverse: true,
           children: [
             Column(
               mainAxisAlignment: MainAxisAlignment.center,
-              crossAxisAlignment: CrossAxisAlignment.start,
+              crossAxisAlignment: CrossAxisAlignment.center,
               children: [
-                
-                SizedBox(height: 12),
-                
+                SizedBox(height: 30),
                 Column(
                   children: [
                     TextField(
@@ -155,7 +153,6 @@ class _MyHomePageState extends State<MyHomePage> {
                     ),
                   ],
                 ),
-                
                 Padding(
                   padding: const EdgeInsets.symmetric(vertical: 20),
                   child: Column(
