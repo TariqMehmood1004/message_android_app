@@ -1,5 +1,6 @@
 // ignore_for_file: library_private_types_in_public_api
 
+import 'package:camera/camera.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:zego_zimkit/zego_zimkit.dart';
@@ -8,7 +9,8 @@ import '../utils/colors.dart';
 import 'home_screen.dart';
 
 class LoginPage extends StatefulWidget {
-  const LoginPage({super.key});
+  const LoginPage({super.key, required this.cameras});
+  final List<CameraDescription> cameras;
 
   @override
   _LoginPageState createState() => _LoginPageState();
@@ -33,7 +35,7 @@ class _LoginPageState extends State<LoginPage> {
 
     try {
       await Auth.login(userID, userName);
-      Get.off(() => MyHomePage(title: "Zedo"));
+      Get.off(() => MyHomePage(title: "Zedo", cameras: widget.cameras));
     } catch (error) {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(

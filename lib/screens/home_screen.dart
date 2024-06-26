@@ -1,3 +1,4 @@
+import 'package:camera/camera.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:zego_zimkit/zego_zimkit.dart';
@@ -9,9 +10,10 @@ import 'video_call_page.dart';
 import 'voice_call_page.dart';
 
 class MyHomePage extends StatefulWidget {
-  const MyHomePage({super.key, required this.title});
+  const MyHomePage({super.key, required this.title, required this.cameras});
 
   final String title;
+  final List<CameraDescription> cameras;
 
   @override
   State<MyHomePage> createState() => _MyHomePageState();
@@ -48,7 +50,7 @@ class _MyHomePageState extends State<MyHomePage> {
           } else {
             // show dialog to get input from user
             Get.to(
-              () => VideoCallPage(callID: callID.text),
+              () => VideoCallPage(callID: callID.text, cameras: widget.cameras),
               fullscreenDialog: true,
               opaque: false,
               transition: Transition.circularReveal,
@@ -116,7 +118,7 @@ class _MyHomePageState extends State<MyHomePage> {
             IconButton(
               onPressed: () async {
                 await Auth.logout();
-                Get.offAll(() => const LoginPage());
+                Get.offAll(() => LoginPage(cameras: widget.cameras));
               },
               icon: const Icon(Icons.logout, color: Colors.white),
             ),

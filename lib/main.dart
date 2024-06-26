@@ -49,8 +49,8 @@ class _MyAppState extends State<MyApp> {
         useMaterial3: true,
       ),
       home: ZIMKit().currentUser() != null
-          ? MyHomePage(title: "Zedo")
-          : const LoginPage(),
+          ? MyHomePage(title: "Zedo", cameras: widget.cameras)
+          : LoginPage(cameras: widget.cameras),
     );
   }
 }
