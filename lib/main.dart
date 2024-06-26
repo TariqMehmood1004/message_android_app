@@ -1,24 +1,26 @@
+// ignore_for_file: unreachable_from_main
+
 import 'dart:developer';
+import 'package:camera/camera.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:zego_zimkit/zego_zimkit.dart';
-import 'auth.dart';
-import 'config.dart';
-import 'home_screen.dart';
-import 'package:camera/camera.dart';
+import 'screens/auth.dart';
+import 'screens/home_screen.dart';
+import 'utils/config.dart';
 
-void main() {
+void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   final cameras = await availableCameras();
   ZIMKit().init(
     appID: appID,
     appSign: appSign,
   );
-  runApp(const MyApp());
+  runApp(MyApp(cameras: cameras));
 }
 
 class MyApp extends StatefulWidget {
-  const MyApp({super.key});
+  const MyApp({super.key, required this.cameras});
   final List<CameraDescription> cameras;
 
   @override
@@ -26,7 +28,6 @@ class MyApp extends StatefulWidget {
 }
 
 class _MyAppState extends State<MyApp> {
-  
   @override
   void initState() {
     super.initState();

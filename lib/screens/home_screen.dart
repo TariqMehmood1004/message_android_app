@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:zego_zimkit/zego_zimkit.dart';
+import '../services/services.dart';
 import 'auth.dart';
 import 'chats_list.dart';
-import 'services/services.dart';
-import 'utils/colors.dart';
+import '../utils/colors.dart';
 import 'video_call_page.dart';
 import 'voice_call_page.dart';
 

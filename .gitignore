@@ -1,3 +1,6 @@
+# In the lib folder, I have utils folder, in there, it has config file to ignore
+/lib/utils/config.dart
+
 # Miscellaneous
 *.class
 *.log

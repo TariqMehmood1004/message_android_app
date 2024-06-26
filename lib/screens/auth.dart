@@ -3,10 +3,9 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:zego_zimkit/zego_zimkit.dart';
-import 'config.dart';
+import '../services/services.dart';
+import '../utils/colors.dart';
 import 'home_screen.dart';
-import 'services/services.dart';
-import 'utils/colors.dart';
 
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
