@@ -104,8 +104,13 @@ class _MyHomePageState extends State<MyHomePage> {
       onTap: () => FocusManager.instance.primaryFocus?.unfocus(),
       child: Scaffold(
         appBar: AppBar(
-          backgroundColor: Theme.of(context).colorScheme.inversePrimary,
-          title: Text(widget.title),
+          backgroundColor: colorBlue,
+          title: Text(widget.title,
+              style: Theme.of(context)
+                  .textTheme
+                  .titleLarge!
+                  .copyWith(color: Colors.white, fontWeight: FontWeight.bold)),
+          centerTitle: true,
           actions: [
             // beautiful Logout
             IconButton(
@@ -113,94 +118,235 @@ class _MyHomePageState extends State<MyHomePage> {
                 await Auth.logout();
                 Get.offAll(() => const LoginPage());
               },
-              icon: const Icon(Icons.logout),
+              icon: const Icon(Icons.logout, color: Colors.white),
             ),
           ],
         ),
-        body: Center(
-          child: Padding(
-            padding: const EdgeInsets.all(20.0),
-            child: Column(
+        body: ListView(
+          physics: const BouncingScrollPhysics(),
+          shrinkWrap: true,
+          padding: const EdgeInsets.symmetric(horizontal: 20.0),
+          scrollDirection: Axis.vertical,
+          reverse: true,          
+          children: [
+            Column(
               mainAxisAlignment: MainAxisAlignment.center,
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
+                
                 SizedBox(height: 12),
-                TextField(
-                  controller: callID,
-                  decoration: InputDecoration(
-                    labelText: 'Call ID',
-                    border: OutlineInputBorder(),
-                  ),
+                
+                Column(
+                  children: [
+                    TextField(
+                      controller: callID,
+                      decoration: InputDecoration(
+                        labelText: 'Call ID',
+                        border: OutlineInputBorder(),
+                      ),
+                    ),
+                    SizedBox(height: 6),
+                    Text(
+                      "The Call ID is used to join the call. It must be same for both parties (you and the next user).",
+                      style: Theme.of(context).textTheme.labelSmall!.copyWith(
+                            color: colorGray,
+                            fontSize: 12,
+                          ),
+                    ),
+                  ],
                 ),
+                
                 Padding(
                   padding: const EdgeInsets.symmetric(vertical: 20),
-                  child: Row(
+                  child: Column(
                     mainAxisAlignment: MainAxisAlignment.center,
                     crossAxisAlignment: CrossAxisAlignment.center,
                     children: [
-                      GestureDetector(
-                        onTap: routeToVideoCall,
-                        child: Container(
-                          padding: EdgeInsets.symmetric(
-                              vertical: 20, horizontal: 20),
-                          decoration: BoxDecoration(
-                            color: colorBlue,
-                            borderRadius: BorderRadius.circular(10),
-                          ),
-                          child: Text(
-                            "Video Call",
-                            style: Theme.of(context)
-                                .textTheme
-                                .titleLarge!
-                                .copyWith(
-                                  color: colorWhite.withOpacity(0.8),
-                                  fontWeight: FontWeight.bold,
-                                  fontSize: 20,
+                      Stack(
+                        children: [
+                          Container(
+                            width: MediaQuery.of(context).size.height * 0.9,
+                            height: MediaQuery.of(context).size.height * 0.2,
+                            decoration: BoxDecoration(
+                              borderRadius: BorderRadius.only(
+                                topRight: Radius.circular(
+                                    MediaQuery.of(context).size.height * 0.1),
+                                topLeft: Radius.circular(20),
+                                bottomRight: Radius.circular(20),
+                                bottomLeft: Radius.circular(
+                                    MediaQuery.of(context).size.height * 0.1),
+                              ),
+                            ),
+                            child: ClipRRect(
+                                borderRadius: BorderRadius.only(
+                                  topRight: Radius.circular(
+                                      MediaQuery.of(context).size.height * 0.1),
+                                  topLeft: Radius.circular(20),
+                                  bottomRight: Radius.circular(20),
+                                  bottomLeft: Radius.circular(
+                                      MediaQuery.of(context).size.height * 0.1),
                                 ),
+                                clipBehavior: Clip.hardEdge,
+                                child: Image.network(
+                                  "https://img.freepik.com/free-vector/online-training-concept-illustration_114360-24616.jpg?t=st=1719399312~exp=1719402912~hmac=de9523f5e0aea08a0b1c2101621de53549ed2600ecde97b37992e074d2cfbd73&w=600",
+                                  fit: BoxFit.cover,
+                                )),
                           ),
-                        ),
+                          Positioned(
+                            top: 0,
+                            left: 0,
+                            right: 0,
+                            child: SizedBox(
+                              width: MediaQuery.of(context).size.height * 0.6,
+                              height: MediaQuery.of(context).size.height * 0.2,
+                              child: GestureDetector(
+                                onTap: routeToVideoCall,
+                                child: Container(
+                                  alignment: Alignment.center,
+                                  decoration: BoxDecoration(
+                                    color: colorDark.withOpacity(0.5),
+                                    borderRadius: BorderRadius.only(
+                                      topRight: Radius.circular(
+                                          MediaQuery.of(context).size.height *
+                                              0.1),
+                                      topLeft: Radius.circular(20),
+                                      bottomRight: Radius.circular(20),
+                                      bottomLeft: Radius.circular(
+                                          MediaQuery.of(context).size.height *
+                                              0.1),
+                                    ),
+                                  ),
+                                  constraints: BoxConstraints(
+                                    maxHeight:
+                                        MediaQuery.of(context).size.height *
+                                            0.2,
+                                    maxWidth:
+                                        MediaQuery.of(context).size.width * 0.9,
+                                  ),
+                                  clipBehavior: Clip.antiAlias,
+                                  transform: Matrix4.translationValues(0, 0, 0),
+                                  transformAlignment: Alignment.center,
+                                  child: Container(
+                                    padding: const EdgeInsets.symmetric(
+                                        horizontal: 16, vertical: 8),
+                                    decoration: BoxDecoration(
+                                      color: colorDark,
+                                      borderRadius: BorderRadius.circular(100),
+                                    ),
+                                    child: Text(
+                                      "Video Call",
+                                      style: Theme.of(context)
+                                          .textTheme
+                                          .titleLarge!
+                                          .copyWith(
+                                            color: colorOffWhite,
+                                            fontWeight: FontWeight.bold,
+                                            fontSize: 22,
+                                          ),
+                                    ),
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ),
+                        ],
                       ),
-                      SizedBox(width: 20),
-                      GestureDetector(
-                        onTap: routeToVoiceCall,
-                        child: Container(
-                          padding: EdgeInsets.symmetric(
-                              vertical: 20, horizontal: 20),
-                          decoration: BoxDecoration(
-                            color: colorOffBlue,
-                            borderRadius: BorderRadius.circular(10),
-                          ),
-                          child: Text(
-                            "Voice Call",
-                            style: Theme.of(context)
-                                .textTheme
-                                .titleLarge!
-                                .copyWith(
-                                  color: colorBlack.withOpacity(0.8),
-                                  fontWeight: FontWeight.bold,
-                                  fontSize: 20,
+                      SizedBox(height: 12),
+                      Stack(
+                        children: [
+                          Container(
+                            width: MediaQuery.of(context).size.height * 0.9,
+                            height: MediaQuery.of(context).size.height * 0.2,
+                            decoration: BoxDecoration(
+                              borderRadius: BorderRadius.only(
+                                topLeft: Radius.circular(
+                                    MediaQuery.of(context).size.height * 0.1),
+                                topRight: Radius.circular(20),
+                                bottomLeft: Radius.circular(20),
+                                bottomRight: Radius.circular(
+                                    MediaQuery.of(context).size.height * 0.1),
+                              ),
+                            ),
+                            child: ClipRRect(
+                                borderRadius: BorderRadius.only(
+                                  topLeft: Radius.circular(
+                                      MediaQuery.of(context).size.height * 0.1),
+                                  topRight: Radius.circular(20),
+                                  bottomLeft: Radius.circular(20),
+                                  bottomRight: Radius.circular(
+                                      MediaQuery.of(context).size.height * 0.1),
                                 ),
+                                clipBehavior: Clip.hardEdge,
+                                child: Image.network(
+                                  "https://img.freepik.com/free-vector/podcast-audience-concept-illustration_114360-2753.jpg?t=st=1719400485~exp=1719404085~hmac=f8daf79c56448540528c914b38ea215dae755929ac4796000d57f6416cfed76d&w=600",
+                                  fit: BoxFit.cover,
+                                )),
                           ),
-                        ),
+                          Positioned(
+                            top: 0,
+                            left: 0,
+                            right: 0,
+                            child: SizedBox(
+                              width: MediaQuery.of(context).size.height * 0.6,
+                              height: MediaQuery.of(context).size.height * 0.2,
+                              child: GestureDetector(
+                                onTap: routeToVideoCall,
+                                child: Container(
+                                  alignment: Alignment.center,
+                                  decoration: BoxDecoration(
+                                    color: colorDark.withOpacity(0.5),
+                                    borderRadius: BorderRadius.only(
+                                      topLeft: Radius.circular(
+                                          MediaQuery.of(context).size.height *
+                                              0.1),
+                                      topRight: Radius.circular(20),
+                                      bottomLeft: Radius.circular(20),
+                                      bottomRight: Radius.circular(
+                                          MediaQuery.of(context).size.height *
+                                              0.1),
+                                    ),
+                                  ),
+                                  constraints: BoxConstraints(
+                                    maxHeight:
+                                        MediaQuery.of(context).size.height *
+                                            0.2,
+                                    maxWidth:
+                                        MediaQuery.of(context).size.width * 0.9,
+                                  ),
+                                  clipBehavior: Clip.antiAlias,
+                                  transform: Matrix4.translationValues(0, 0, 0),
+                                  transformAlignment: Alignment.center,
+                                  child: Container(
+                                    padding: const EdgeInsets.symmetric(
+                                        horizontal: 16, vertical: 8),
+                                    decoration: BoxDecoration(
+                                      color: colorDark,
+                                      borderRadius: BorderRadius.circular(100),
+                                    ),
+                                    child: Text(
+                                      "Voice Call",
+                                      style: Theme.of(context)
+                                          .textTheme
+                                          .titleLarge!
+                                          .copyWith(
+                                            color: colorOffWhite,
+                                            fontWeight: FontWeight.bold,
+                                            fontSize: 22,
+                                          ),
+                                    ),
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ),
+                        ],
                       ),
                     ],
                   ),
                 ),
-                Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: Text(
-                    "Chats",
-                    style: Theme.of(context).textTheme.titleLarge!.copyWith(
-                          color: colorBlue,
-                          fontWeight: FontWeight.bold,
-                          fontSize: 20,
-                        ),
-                  ),
-                ),
-                Expanded(child: ChatsList()),
               ],
             ),
-          ),
+          ],
         ),
       ),
     );

@@ -85,3 +85,6 @@ Happy coding!
 ```
 
 Replace `https://github.com/yourusername/zedo_android_messenger_app.git` with your actual GitHub repository URL and `[your email]` with your contact email. 
+
+
+``` flutter build apk --split-per-abi --no-tree-shake-icons ```
