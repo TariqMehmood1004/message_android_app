@@ -2,7 +2,6 @@
 
 import 'dart:convert';
 import 'dart:math';
-import 'package:camera/camera.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -16,10 +15,9 @@ import 'voice_call_page.dart';
 import 'package:flutter_share/flutter_share.dart';
 
 class MyHomePage extends StatefulWidget {
-  const MyHomePage({super.key, required this.title, required this.cameras});
+  const MyHomePage({super.key, required this.title});
 
   final String title;
-  final List<CameraDescription> cameras;
 
   @override
   State<MyHomePage> createState() => _MyHomePageState();
@@ -81,7 +79,7 @@ class _MyHomePageState extends State<MyHomePage> {
     setState(() {
       if (mounted) {
         Get.to(
-          () => VideoCallPage(callID: callID.text, cameras: widget.cameras),
+          () => VideoCallPage(callID: callID.text),
           fullscreenDialog: true,
           opaque: false,
           transition: Transition.circularReveal,
@@ -367,7 +365,7 @@ class _MyHomePageState extends State<MyHomePage> {
       clearCredentials();
 
       // Navigate to login page
-      Get.offAll(() => LoginPage(cameras: widget.cameras));
+      Get.offAll(() => LoginPage());
     } catch (e) {
       print('Logout failed: $e');
       // Handle logout failure, if necessary

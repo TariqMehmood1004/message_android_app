@@ -2,8 +2,7 @@ name: message
 description: "A flutter project for message/video/audio calls version v1.2.2"
 publish_to: 'none' 
 
-version: 1.2.2
-# version: 1.0.0+1
+version: 1.2.3
 
 environment:
   sdk: '>=3.4.3 <4.0.0'
@@ -12,13 +11,12 @@ dependencies:
   flutter:
     sdk: flutter
   cupertino_icons: ^1.0.6
+  zego_zimkit: ^1.18.7
   zego_uikit_prebuilt_call: ^4.12.9
   get: ^4.6.6
-  zego_zimkit: ^1.18.7
   
   # For Video Call Flash Light
   torch_light: ^1.0.0
-  camera: ^0.11.0+1
   shared_preferences: ^2.2.3
   url_launcher: ^6.0.17
   flutter_share: ^2.0.0

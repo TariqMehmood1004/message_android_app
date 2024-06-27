@@ -1,4 +1,3 @@
-import 'package:camera/camera.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -7,8 +6,7 @@ import '../utils/colors.dart';
 import 'home_screen.dart';
 
 class LoginPage extends StatefulWidget {
-  const LoginPage({super.key, required this.cameras});
-  final List<CameraDescription> cameras;
+  const LoginPage({super.key});
 
   @override
   // ignore: library_private_types_in_public_api
@@ -53,7 +51,7 @@ class _LoginPageState extends State<LoginPage> {
           await prefs.setString('userName', userName);
 
           Get.off(
-            () => MyHomePage(title: "Zedo", cameras: widget.cameras),
+            () => MyHomePage(title: "Zedo"),
             transition: Transition.circularReveal,
           );
         }
