@@ -5,6 +5,7 @@ import 'dart:math';
 import 'package:camera/camera.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:zego_zimkit/zego_zimkit.dart';
 import '../services/services.dart';
 import 'auth.dart';
@@ -12,7 +13,7 @@ import 'chats_list.dart';
 import '../utils/colors.dart';
 import 'video_call_page.dart';
 import 'voice_call_page.dart';
-import 'package:url_launcher/url_launcher.dart';
+import 'package:flutter_share/flutter_share.dart';
 
 class MyHomePage extends StatefulWidget {
   const MyHomePage({super.key, required this.title, required this.cameras});
@@ -27,11 +28,26 @@ class MyHomePage extends StatefulWidget {
 class _MyHomePageState extends State<MyHomePage> {
   TextEditingController callID = TextEditingController();
   late String randomCallID;
+  String? savedUserID;
+  String? savedUserName;
 
   @override
   void initState() {
     super.initState();
     generateRandomCallID();
+    _loadSavedCredentials();
+  }
+
+  Future<void> _loadSavedCredentials() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    savedUserID = prefs.getString('userID');
+    savedUserName = prefs.getString('userName');
+
+    if (savedUserID != null && savedUserName != null) {
+      setState(() {
+        callID.text = savedUserID!;
+      });
+    }
   }
 
   void generateRandomCallID() {
@@ -48,24 +64,16 @@ class _MyHomePageState extends State<MyHomePage> {
   }
 
   Future<void> shareCallID(String callID) async {
-    String message = 'Join my call with Call ID: $callID';
+    String message = callID;
 
-    // Use url_launcher to share via WhatsApp
-    String whatsappUrl =
-        'whatsapp://send?text=${Uri.encodeQueryComponent(message)}';
-    if (await canLaunch(whatsappUrl)) {
-      await launch(whatsappUrl);
-    } else {
-      print('Could not launch WhatsApp.');
-    }
-
-    // Use url_launcher to share via Email
-    String emailUrl =
-        'mailto:?subject=Join%20My%20Call&body=${Uri.encodeQueryComponent(message)}';
-    if (await canLaunch(emailUrl)) {
-      await launch(emailUrl);
-    } else {
-      print('Could not launch Email.');
+    try {
+      await FlutterShare.share(
+        title: 'Share via WhatsApp',
+        text: message,
+        chooserTitle: 'Share via',
+      );
+    } catch (e) {
+      print('Error sharing via WhatsApp: $e');
     }
   }
 
@@ -103,21 +111,20 @@ class _MyHomePageState extends State<MyHomePage> {
         appBar: AppBar(
           backgroundColor: colorBlue,
           title: Text(
-            widget.title,
+            '${widget.title} - ${savedUserName ?? 'Anonymous'}',
             style: Theme.of(context).textTheme.titleLarge!.copyWith(
                   color: Colors.white,
                   fontWeight: FontWeight.bold,
                 ),
           ),
-          centerTitle: true,
+          centerTitle: false,
           actions: [
             // beautiful Logout
             IconButton(
               onPressed: () async {
-                await Auth.logout();
-                Get.offAll(() => LoginPage(cameras: widget.cameras));
+                await _logout(context);
               },
-              icon: const Icon(Icons.logout, color: Colors.white),
+              icon: const Icon(Icons.delete, color: Colors.white),
             ),
           ],
         ),
@@ -135,19 +142,17 @@ class _MyHomePageState extends State<MyHomePage> {
                 SizedBox(height: 30),
                 Column(
                   children: [
-                    TextField(
+                    TextFormField(
                       controller: callID,
                       decoration: InputDecoration(
                         labelText: 'Call ID',
                         border: OutlineInputBorder(),
+                        suffixIcon: IconButton(
+                            onPressed: () {
+                              shareCallID(callID.text);
+                            },
+                            icon: Icon(Icons.content_copy)),
                       ),
-                    ),
-                    SizedBox(height: 16),
-                    ElevatedButton(
-                      onPressed: () {
-                        shareCallID(callID.text);
-                      },
-                      child: Text('Share Call ID'),
                     ),
                     SizedBox(height: 6),
                     Text(
@@ -353,5 +358,26 @@ class _MyHomePageState extends State<MyHomePage> {
         ),
       ),
     );
+  }
+
+  Future<void> _logout(BuildContext context) async {
+    try {
+      // Disconnect user from Zego cloud
+      await ZIMKit().disconnectUser();
+      clearCredentials();
+
+      // Navigate to login page
+      Get.offAll(() => LoginPage(cameras: widget.cameras));
+    } catch (e) {
+      print('Logout failed: $e');
+      // Handle logout failure, if necessary
+    }
+  }
+
+  // Method to clear credentials
+  static Future<void> clearCredentials() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    await prefs.remove("userID");
+    await prefs.remove("userName");
   }
 }

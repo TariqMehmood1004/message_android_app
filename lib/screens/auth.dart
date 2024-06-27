@@ -19,28 +19,45 @@ class _LoginPageState extends State<LoginPage> {
   final TextEditingController _userIDController = TextEditingController();
   final TextEditingController _userNameController = TextEditingController();
 
+  @override
+  void initState() {
+    super.initState();
+    _loadSavedCredentials(); // Load saved credentials on app start
+  }
+
   Future<void> connectUser() async {
     String userID = _userIDController.text.trim();
     String userName = _userNameController.text.trim();
 
-    if (userID.isEmpty || userName.isEmpty) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text('User ID and User Name cannot be empty'),
-        ),
-      );
-      return;
-    }
-
     try {
-      await Auth.login(userID, userName);
+      if (userID.isEmpty || userName.isEmpty) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text('User ID and User Name cannot be empty'),
+          ),
+        );
+        return;
+      } else {
+        if (userID.length != 11) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Text('Phone number must be 11 characters long'),
+            ),
+          );
+        } else {
+          await Auth.login(userID, userName);
 
-      // Save credentials to shared preferences
-      SharedPreferences prefs = await SharedPreferences.getInstance();
-      await prefs.setString('userID', userID);
-      await prefs.setString('userName', userName);
+          // Save credentials to shared preferences
+          SharedPreferences prefs = await SharedPreferences.getInstance();
+          await prefs.setString('userID', userID);
+          await prefs.setString('userName', userName);
 
-      Get.off(() => MyHomePage(title: "Zedo", cameras: widget.cameras));
+          Get.off(
+            () => MyHomePage(title: "Zedo", cameras: widget.cameras),
+            transition: Transition.circularReveal,
+          );
+        }
+      }
     } catch (error) {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
@@ -48,12 +65,6 @@ class _LoginPageState extends State<LoginPage> {
         ),
       );
     }
-  }
-
-  @override
-  void initState() {
-    super.initState();
-    _loadSavedCredentials(); // Load saved credentials on app start
   }
 
   Future<void> _loadSavedCredentials() async {
@@ -101,22 +112,45 @@ class _LoginPageState extends State<LoginPage> {
                               ),
                     ),
                     SizedBox(height: 32),
-                    TextField(
+                    TextFormField(
                       controller: _userIDController,
                       keyboardType: TextInputType.number,
                       decoration: InputDecoration(
-                        labelText: 'User ID (e.g. 123456)',
+                        labelText: 'Phone Number',
                         border: OutlineInputBorder(),
                       ),
+                      validator: (value) {
+                        // Check if value is not empty
+                        if (value == null || value.isEmpty) {
+                          return 'Please enter your phone number';
+                        }
+
+                        // Check if value is exactly 11 digits
+                        if (value.length != 11) {
+                          return 'Please enter a valid 11-digit phone number';
+                        }
+
+                        // Check if value contains only digits
+                        if (!RegExp(r'^[0-9]+$').hasMatch(value)) {
+                          return 'Please enter only numeric digits';
+                        }
+                        return null; // Return null if the input is valid
+                      },
                     ),
                     SizedBox(height: 16),
-                    TextField(
+                    TextFormField(
                       controller: _userNameController,
                       keyboardType: TextInputType.name,
                       decoration: InputDecoration(
-                        labelText: 'User Name (e.g. Tariq Mehmood)',
+                        labelText: 'Profile Name',
                         border: OutlineInputBorder(),
                       ),
+                      validator: (value) {
+                        if (value == null || value.isEmpty) {
+                          return 'Please enter your user name';
+                        }
+                        return null;
+                      },
                     ),
                     SizedBox(height: 32),
                     SizedBox(

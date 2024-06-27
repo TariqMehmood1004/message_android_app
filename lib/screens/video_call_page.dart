@@ -88,8 +88,8 @@ class _VideoCallPageState extends State<VideoCallPage> {
           if (hasFrontFlash)
             AnimatedPositioned(
               duration: Duration(milliseconds: 100),
-              top: _top,
-              left: _left,
+              top: _top + MediaQuery.of(context).padding.top + 20,
+              left: _left + MediaQuery.of(context).padding.left + 20,
               child: GestureDetector(
                 onPanUpdate: (details) {
                   setState(() {
