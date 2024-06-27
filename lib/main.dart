@@ -1,9 +1,7 @@
-// ignore_for_file: unreachable_from_main
-
-import 'dart:developer';
-import 'package:camera/camera.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:camera/camera.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:zego_zimkit/zego_zimkit.dart';
 import 'screens/auth.dart';
 import 'screens/home_screen.dart';
@@ -16,28 +14,33 @@ void main() async {
     appID: appID,
     appSign: appSign,
   );
-  runApp(MyApp(cameras: cameras));
+
+  // Check if user credentials are stored in SharedPreferences
+  SharedPreferences prefs = await SharedPreferences.getInstance();
+  String? savedUserID = prefs.getString('userID');
+  String? savedUserName = prefs.getString('userName');
+
+  print("User ID: $savedUserID");
+  print("User Name: $savedUserName");
+
+  runApp(MyApp(
+    cameras: cameras,
+    savedUserID: savedUserID,
+    savedUserName: savedUserName,
+  ));
 }
 
-class MyApp extends StatefulWidget {
-  const MyApp({super.key, required this.cameras});
+class MyApp extends StatelessWidget {
+  const MyApp({
+    super.key,
+    required this.cameras,
+    required this.savedUserID,
+    required this.savedUserName,
+  });
+
   final List<CameraDescription> cameras;
-
-  @override
-  State<MyApp> createState() => _MyAppState();
-}
-
-class _MyAppState extends State<MyApp> {
-  @override
-  void initState() {
-    super.initState();
-
-    if (ZIMKit().currentUser != null) {
-      log("Current User: ${ZIMKit().currentUser()}");
-    } else {
-      log("Current User: Not Available...");
-    }
-  }
+  final String? savedUserID;
+  final String? savedUserName;
 
   @override
   Widget build(BuildContext context) {
@@ -48,9 +51,9 @@ class _MyAppState extends State<MyApp> {
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
         useMaterial3: true,
       ),
-      home: ZIMKit().currentUser() != null
-          ? MyHomePage(title: "Zedo", cameras: widget.cameras)
-          : LoginPage(cameras: widget.cameras),
+      home: savedUserID != null && savedUserName != null
+          ? MyHomePage(title: "Zedo", cameras: cameras)
+          : LoginPage(cameras: cameras),
     );
   }
 }

@@ -1,9 +1,7 @@
-// ignore_for_file: library_private_types_in_public_api
-
 import 'package:camera/camera.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:zego_zimkit/zego_zimkit.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import '../services/services.dart';
 import '../utils/colors.dart';
 import 'home_screen.dart';
@@ -13,6 +11,7 @@ class LoginPage extends StatefulWidget {
   final List<CameraDescription> cameras;
 
   @override
+  // ignore: library_private_types_in_public_api
   _LoginPageState createState() => _LoginPageState();
 }
 
@@ -35,6 +34,12 @@ class _LoginPageState extends State<LoginPage> {
 
     try {
       await Auth.login(userID, userName);
+
+      // Save credentials to shared preferences
+      SharedPreferences prefs = await SharedPreferences.getInstance();
+      await prefs.setString('userID', userID);
+      await prefs.setString('userName', userName);
+
       Get.off(() => MyHomePage(title: "Zedo", cameras: widget.cameras));
     } catch (error) {
       ScaffoldMessenger.of(context).showSnackBar(
@@ -42,6 +47,23 @@ class _LoginPageState extends State<LoginPage> {
           content: Text(error.toString()),
         ),
       );
+    }
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    _loadSavedCredentials(); // Load saved credentials on app start
+  }
+
+  Future<void> _loadSavedCredentials() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    String? savedUserID = prefs.getString('userID');
+    String? savedUserName = prefs.getString('userName');
+
+    if (savedUserID != null && savedUserName != null) {
+      _userIDController.text = savedUserID;
+      _userNameController.text = savedUserName;
     }
   }
 

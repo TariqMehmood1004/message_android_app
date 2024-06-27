@@ -1,3 +1,7 @@
+// ignore_for_file: prefer_final_locals, always_specify_types
+
+import 'dart:convert';
+import 'dart:math';
 import 'package:camera/camera.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -8,6 +12,7 @@ import 'chats_list.dart';
 import '../utils/colors.dart';
 import 'video_call_page.dart';
 import 'voice_call_page.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class MyHomePage extends StatefulWidget {
   const MyHomePage({super.key, required this.title, required this.cameras});
@@ -21,42 +26,58 @@ class MyHomePage extends StatefulWidget {
 
 class _MyHomePageState extends State<MyHomePage> {
   TextEditingController callID = TextEditingController();
+  late String randomCallID;
+
+  @override
+  void initState() {
+    super.initState();
+    generateRandomCallID();
+  }
+
+  void generateRandomCallID() {
+    const int length = 16;
+    var random = Random.secure();
+    var codeUnits = List.generate(length, (index) {
+      return random.nextInt(33) + 89;
+    });
+
+    setState(() {
+      randomCallID = String.fromCharCodes(codeUnits);
+      callID.text = randomCallID;
+    });
+  }
+
+  Future<void> shareCallID(String callID) async {
+    String message = 'Join my call with Call ID: $callID';
+
+    // Use url_launcher to share via WhatsApp
+    String whatsappUrl =
+        'whatsapp://send?text=${Uri.encodeQueryComponent(message)}';
+    if (await canLaunch(whatsappUrl)) {
+      await launch(whatsappUrl);
+    } else {
+      print('Could not launch WhatsApp.');
+    }
+
+    // Use url_launcher to share via Email
+    String emailUrl =
+        'mailto:?subject=Join%20My%20Call&body=${Uri.encodeQueryComponent(message)}';
+    if (await canLaunch(emailUrl)) {
+      await launch(emailUrl);
+    } else {
+      print('Could not launch Email.');
+    }
+  }
+
   void routeToVideoCall() {
     setState(() {
       if (mounted) {
-        if (callID.text == "") {
-          if (ZIMKit().currentUser == null) {
-            // Show Scaffold Messenger
-            ScaffoldMessenger.of(context).showSnackBar(
-              const SnackBar(
-                content: Text('Please login first'),
-              ),
-            );
-          }
-          // Show Scaffold Messenger
-          ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(
-              content: Text('Please enter call ID'),
-            ),
-          );
-        } else {
-          if (ZIMKit().currentUser == null) {
-            // Show Scaffold Messenger
-            ScaffoldMessenger.of(context).showSnackBar(
-              const SnackBar(
-                content: Text('Please login first'),
-              ),
-            );
-          } else {
-            // show dialog to get input from user
-            Get.to(
-              () => VideoCallPage(callID: callID.text, cameras: widget.cameras),
-              fullscreenDialog: true,
-              opaque: false,
-              transition: Transition.circularReveal,
-            );
-          }
-        }
+        Get.to(
+          () => VideoCallPage(callID: callID.text, cameras: widget.cameras),
+          fullscreenDialog: true,
+          opaque: false,
+          transition: Transition.circularReveal,
+        );
       }
     });
   }
@@ -64,38 +85,12 @@ class _MyHomePageState extends State<MyHomePage> {
   void routeToVoiceCall() {
     setState(() {
       if (mounted) {
-        if (callID.text == "") {
-          if (ZIMKit().currentUser == null) {
-            // Show Scaffold Messenger
-            ScaffoldMessenger.of(context).showSnackBar(
-              const SnackBar(
-                content: Text('Please login first'),
-              ),
-            );
-          }
-          // Show Scaffold Messenger
-          ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(
-              content: Text('Please enter call ID'),
-            ),
-          );
-        } else {
-          if (ZIMKit().currentUser == null) {
-            // Show Scaffold Messenger
-            ScaffoldMessenger.of(context).showSnackBar(
-              const SnackBar(
-                content: Text('Please login first'),
-              ),
-            );
-          } else {
-            Get.to(
-              () => VoiceCallPage(callID: callID.text),
-              fullscreenDialog: true,
-              opaque: false,
-              transition: Transition.circularReveal,
-            );
-          }
-        }
+        Get.to(
+          () => VoiceCallPage(callID: callID.text),
+          fullscreenDialog: true,
+          opaque: false,
+          transition: Transition.circularReveal,
+        );
       }
     });
   }
@@ -107,11 +102,13 @@ class _MyHomePageState extends State<MyHomePage> {
       child: Scaffold(
         appBar: AppBar(
           backgroundColor: colorBlue,
-          title: Text(widget.title,
-              style: Theme.of(context)
-                  .textTheme
-                  .titleLarge!
-                  .copyWith(color: Colors.white, fontWeight: FontWeight.bold)),
+          title: Text(
+            widget.title,
+            style: Theme.of(context).textTheme.titleLarge!.copyWith(
+                  color: Colors.white,
+                  fontWeight: FontWeight.bold,
+                ),
+          ),
           centerTitle: true,
           actions: [
             // beautiful Logout
@@ -144,6 +141,13 @@ class _MyHomePageState extends State<MyHomePage> {
                         labelText: 'Call ID',
                         border: OutlineInputBorder(),
                       ),
+                    ),
+                    SizedBox(height: 16),
+                    ElevatedButton(
+                      onPressed: () {
+                        shareCallID(callID.text);
+                      },
+                      child: Text('Share Call ID'),
                     ),
                     SizedBox(height: 6),
                     Text(
